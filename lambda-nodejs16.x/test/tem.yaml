@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for a simple web service
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  EmployeeFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: path/to/your/code # Update this with your actual code path
+      Handler: app.lambdaHandler # Your file might be named differently
+      Runtime: nodejs14.x
+      Events:
+        GetRequest:
+          Type: Api
+          Properties:
+            Path: /employees
+            Method: get
+        PostRequest:
+          Type: Api
+          Properties:
+            Path: /employees
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EmployeesTable
+
+  EmployeesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Employees
+      AttributeDefinitions:
+        - AttributeName: "employeeId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "employeeId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  EmployeeApi:
+    Description: "URL for the serverless application"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/employees/"
+  EmployeeFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt EmployeeFunction.Arn
+  EmployeeFunctionIamRole:
+    Description: "Implicit IAM Role created for Employee function"
+    Value: !GetAtt EmployeeFunctionRole.Arn
