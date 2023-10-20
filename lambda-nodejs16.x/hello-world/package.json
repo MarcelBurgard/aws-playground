@@ -13,12 +13,14 @@
   "type": "module",
   "scripts": {
     "test": "mocha tests/unit/",
-    "build": "esbuild app.ts --bundle --outfile=app.js"
+    "compile": "tsc"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.125",
+    "@types/node": "^20.8.7",
     "chai": "^4.2.0",
     "esbuild": "0.19.5",
-    "mocha": "^9.1.4"
+    "mocha": "^9.1.4",
+    "typescript": "^5.2.2"
   }
 }
